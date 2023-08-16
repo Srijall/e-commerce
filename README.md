@@ -1,12 +1,9 @@
-# MERN Ecommerce
+# 6th sem projects 
 
 ## Description
 
-An ecommerce store built with MERN stack, and utilizes third party API's. This ecommerce store enable three main different flows or implementations:
 
-1. Buyers browse the store categories, products and brands
-2. Sellers or Merchants manage their own brand component
-3. Admins manage and control the entire store components 
+
 
 
 * features:
@@ -29,21 +26,7 @@ An ecommerce store built with MERN stack, and utilizes third party API's. This e
 npm run seed:db [email-***@****.com] [password-******] // This is just an example.
 ```
 
-## Demo
 
-This application is deployed on Render Please check it out :smile: [here](https://mern-store.onrender.com).
-
-See admin dashboard [demo](https://mernstore-bucket.s3.us-east-2.amazonaws.com/admin.mp4)
-
-## Install
-
-Some basic Git commands are:
-
-```
-$ git clone https://github.com/mohamedsamara/mern-ecommerce.git
-$ cd project
-$ npm install
-```
 
 ## Setup
 
