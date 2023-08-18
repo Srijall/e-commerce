@@ -15,9 +15,13 @@ const {
   getStoreProductsQuery,
   getStoreProductsWishListQuery
 } = require('../../utils/queries');
-const { ROLES } = require('../../constants');
+const { ROLES, REVIEW_STATUS } = require('../../constants');
 const order = require('../../models/order');
 const cart = require('../../models/cart');
+const product = require('../../models/product');
+const category = require('../../models/category');
+const { ObjectId } = require('mongoose');
+const review = require('../../models/review');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/'); // Specify the directory where files will be saved
@@ -29,27 +33,69 @@ const storage = multer.diskStorage({
 });
 
 // const storage = multer.memoryStorage();
+
+// recommendation algorithm
 const upload = multer({ storage });
 router.get('/recommended',
 auth,
 async(req,res)=>{
   console.log("enter")
   try { 
-    console.log(req.user._id);
     const userId=req.user._id;
     const orders = await order.find({user:userId});
-    console.log(orders)
-    orders.map(async(ord)=>{
-      const carts=await cart.find({_id:orders.cart});
+    let productsOrdered=[];
+    await Promise.all(
+      orders.map(async(ord)=>{
+        const carts=await cart.find({_id:ord.cart});
+        await Promise.all(carts[0].products.map(async(cartItem)=>{
+          const products=await product.find({_id:cartItem.product})
+          products.map((prd)=>{
+            productsOrdered.push(prd._id);
+          })
+        }));
+      })
+    )
+    const recommendedProductsId=[];
+    const recommendedProductsList=[];
+    await Promise.all(productsOrdered.map(async(pid)=>{
+      const categoryss=await category.findOne({products:pid});
+      if(categoryss){
+        recommendedProductsId.push(...categoryss.products)
+      }
+  
+    }))
+
+  await Promise.all(recommendedProductsId.map(async(pro_id)=>{
+    let reviewStar,numofReview,avgReview;
+    reviewStar=numofReview=avgReview=0;
+    const Productrecommend=await product.findOne({_id:pro_id});
+    const reviews = await review.find({
+      product: Productrecommend._id,
+      status: REVIEW_STATUS.Approved
+    })
+    reviews?.map((rev)=>{
+      reviewStar+=rev.rating;
+      numofReview++;
 
     })
-  console.log(carts);
-  } catch (error) {
+    avgReview=reviewStar/ numofReview; 
+    avgReview= avgReview || 0;
+    Productrecommend['avgRating']=avgReview;
+    recommendedProductsList.push({...Productrecommend._doc,avgReview});
+  }))
+  console.log({recommendedProductsList})
+  const sortedRecommendedProduct=recommendedProductsList.sort((a,b)=>(b.avgReview-a.avgReview))
+  return res.status(200).json({
+    data:sortedRecommendedProduct
+  })
+} catch (error) {
     res.status(400).json({
       error: error.message
     });
   }
 })
+// end of recommendation algo
+
 // fetch product slug api
 router.get('/item/:slug', async (req, res) => {
   try {

@@ -1,2 +1,16 @@
 // .homepage {
 // }
+.recommended-product-container {
+    width: 100%; /* Set the width */
+    height: 500px; /* Set the height */
+    border: 1px solid #ccc;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  .recommended-product-image {
+    width: 100%; /* Set the width to fill the container */
+    height: 200px; /* Set the height of the image */
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+  }
