@@ -12,10 +12,12 @@ import AddToWishList from '../AddToWishList';
 
 const ProductList = props => {
   const { products, updateWishlist, authenticated } = props;
-
   return (
     <div className='product-list'>
-      {products.map((product, index) => (
+      {products.map((product, index) => {
+console.log(product.price);
+
+        return (
         <div key={index} className='mb-3 mb-md-0'>
           <div className='product-container'>
             <div className='item-box'>
@@ -58,7 +60,7 @@ const ProductList = props => {
                     </div>
                   </div>
                   <div className='d-flex flex-row justify-content-between align-items-center px-4 mb-2 item-footer'>
-                    <p className='price mb-0'>${product.price}</p>
+                    <p className='price mb-0'>Rs. {product.price}</p>
                     {product.totalReviews > 0 && (
                       <p className='mb-0'>
                         <span className='fs-16 fw-normal mr-1'>
@@ -78,7 +80,7 @@ const ProductList = props => {
             </div>
           </div>
         </div>
-      ))}
+      )})}
     </div>
   );
 };

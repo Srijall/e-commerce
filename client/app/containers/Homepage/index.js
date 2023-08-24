@@ -12,6 +12,7 @@ import banners from './banners.json';
 import CarouselSlider from '../../components/Common/CarouselSlider';
 import { responsiveOneItemCarousel } from '../../components/Common/CarouselSlider/utils';
 import axios from 'axios'; // Import axios for making HTTP requests
+import { Link } from 'react-router-dom';
 
 class Homepage extends React.PureComponent {
   constructor(props) {
@@ -36,6 +37,8 @@ class Homepage extends React.PureComponent {
         console.error('Error fetching recommended products:', error);
       });
   }
+
+  
   render() {
     const { recommendedProducts } = this.state;
     console.log(recommendedProducts);
@@ -77,10 +80,12 @@ class Homepage extends React.PureComponent {
         </h1>
         <Row>
           {recommendedProducts?.map((product, index) => (
-             <Col key={index} xs='12' lg='4' className='mb-3 px-3 px-md-2'>
+
+             <Col key={index} xs='12' lg='4' className='mb-3 px-3 px-md-2' >
              <div className='recommended-product'>
                {/* Render product details */}
                <div className='recommended-product-container'>
+               <Link to={`/product/${product.slug}`} className='product-link'>
                  <img src={product.imageUrl} alt={product.name} className='recommended-product-image' />
                  <h3>{product.name}</h3>
                  <p>{product.description}</p>
@@ -91,6 +96,7 @@ class Homepage extends React.PureComponent {
                     <span className="fa fa-star checked" ></span>
                    </p>
                   </div>
+                  </Link>
                </div>
              </div>
            </Col>
